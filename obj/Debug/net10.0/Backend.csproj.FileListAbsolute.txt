@@ -34,3 +34,4 @@
 /Users/jeancarlos/Desktop/Backend/Backend/bin/Debug/net10.0/Swashbuckle.AspNetCore.Swagger.dll
 /Users/jeancarlos/Desktop/Backend/Backend/bin/Debug/net10.0/Swashbuckle.AspNetCore.SwaggerGen.dll
 /Users/jeancarlos/Desktop/Backend/Backend/bin/Debug/net10.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/Users/jeancarlos/Desktop/Backend/Backend/obj/Debug/net10.0/Backend.sourcelink.json
