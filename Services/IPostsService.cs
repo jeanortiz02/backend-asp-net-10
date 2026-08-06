@@ -3,7 +3,7 @@ using Backend.Dtos;
 
 namespace Backend.Services;
 
-public interface IPostService
+public interface IPostsService
 {
     public Task<IEnumerable<PostDto>> Get();
 }

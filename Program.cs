@@ -1,15 +1,31 @@
+using Backend.Models;
 using Backend.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// builder.Services.AddSingleton<IPeopleService, PeopleService>();
+builder.Services.AddSingleton<IPeopleService, PeopleService>();
 builder.Services.AddKeyedSingleton<IPeopleService, PeopleService>("peopleService");
-builder.Services.AddSingleton<IPostService, PostService>();
 
 builder.Services.AddKeyedSingleton<IRandomService, RandomService>("randomSingleton");
 builder.Services.AddKeyedScoped<IRandomService, RandomService>("randomScope");
 builder.Services.AddKeyedTransient<IRandomService, RandomService>("randomTransient");
+
+builder.Services.AddScoped<IPostsService, PostsService>();
+
+// HttpClient
+builder.Services.AddHttpClient<IPostsService, PostsService>( client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["baseUrlPost"]);
+});
+
+//* Database - Entity Framework Core
+builder.Services.AddDbContext<StoreContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("StoreConnection"));
+});
+
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
