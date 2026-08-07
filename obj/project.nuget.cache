@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "9y367DnbqAs=",
+  "dgSpecHash": "aAaZ7Ceeik0=",
   "success": true,
   "projectFilePath": "/Users/jeancarlos/Desktop/Backend/Backend/Backend.csproj",
   "expectedPackageFiles": [
     "/Users/jeancarlos/.nuget/packages/azure.core/1.47.1/azure.core.1.47.1.nupkg.sha512",
     "/Users/jeancarlos/.nuget/packages/azure.identity/1.14.2/azure.identity.1.14.2.nupkg.sha512",
+    "/Users/jeancarlos/.nuget/packages/fluentvalidation/8.3.0/fluentvalidation.8.3.0.nupkg.sha512",
     "/Users/jeancarlos/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/Users/jeancarlos/.nuget/packages/microsoft.aspnetcore.openapi/10.0.10/microsoft.aspnetcore.openapi.10.0.10.nupkg.sha512",
     "/Users/jeancarlos/.nuget/packages/microsoft.bcl.asyncinterfaces/8.0.0/microsoft.bcl.asyncinterfaces.8.0.0.nupkg.sha512",
@@ -47,6 +48,7 @@
     "/Users/jeancarlos/.nuget/packages/swashbuckle.aspnetcore.swaggerui/10.2.3/swashbuckle.aspnetcore.swaggerui.10.2.3.nupkg.sha512",
     "/Users/jeancarlos/.nuget/packages/system.clientmodel/1.5.1/system.clientmodel.1.5.1.nupkg.sha512",
     "/Users/jeancarlos/.nuget/packages/system.codedom/6.0.0/system.codedom.6.0.0.nupkg.sha512",
+    "/Users/jeancarlos/.nuget/packages/system.componentmodel.annotations/4.4.1/system.componentmodel.annotations.4.4.1.nupkg.sha512",
     "/Users/jeancarlos/.nuget/packages/system.composition/9.0.0/system.composition.9.0.0.nupkg.sha512",
     "/Users/jeancarlos/.nuget/packages/system.composition.attributedmodel/9.0.0/system.composition.attributedmodel.9.0.0.nupkg.sha512",
     "/Users/jeancarlos/.nuget/packages/system.composition.convention/9.0.0/system.composition.convention.9.0.0.nupkg.sha512",
