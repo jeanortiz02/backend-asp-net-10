@@ -16,6 +16,7 @@ builder.Services.AddKeyedScoped<IRandomService, RandomService>("randomScope");
 builder.Services.AddKeyedTransient<IRandomService, RandomService>("randomTransient");
 
 builder.Services.AddScoped<IPostsService, PostsService>();
+builder.Services.AddKeyedScoped<ICommomService<BeerDto, BeerInsertDto, BeerUpdateDto>, BeerService>("beerService");
 
 // HttpClient
 builder.Services.AddHttpClient<IPostsService, PostsService>( client =>
@@ -31,6 +32,7 @@ builder.Services.AddDbContext<StoreContext>(options =>
 
 // Validators
 builder.Services.AddScoped<IValidator<BeerInsertDto>, BeerInsertValidator>();
+builder.Services.AddScoped<IValidator<BeerUpdateDto>, BeerUpdateValidator>();
 
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

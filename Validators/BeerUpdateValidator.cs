@@ -4,10 +4,11 @@ using FluentValidation;
 
 namespace Backend.Validators;
 
-public class BeerInsertValidator : AbstractValidator<BeerInsertDto>
+public class BeerUpdateValidator : AbstractValidator<BeerUpdateDto>
 {
-    public BeerInsertValidator()
+    public BeerUpdateValidator()
     {
+        RuleFor(x => x.Id).NotNull().WithMessage("El ID es obligatorio");
         RuleFor(x => x.Name).NotEmpty().WithMessage("El name no debe estar vacío");
         RuleFor(x => x.Name).Length(2, 20).WithMessage("El nombre debe ser entre 2 y 20 caracteres");
         RuleFor(x => x.BrandID).NotNull().WithMessage("La marca es obligatoria");
