@@ -1,5 +1,4 @@
 .DS_Store
 
-bin/*
-bin/Debug/*
-obj/*
+bin/
+obj/
