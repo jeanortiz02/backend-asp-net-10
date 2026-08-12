@@ -8,8 +8,8 @@ public interface ICommomService<T, TI, TU>
 {
     Task<IEnumerable<T>> Get();
     Task<T> GetById(int id);
-    Task<TI> Add(TI beerInsertDto);
-    Task<TU> Update(int id, TU beerUpdateDto);
+    Task<T> Add(TI beerInsertDto);
+    Task<T> Update(int id, TU beerUpdateDto);
     Task<T> Delete(int id);
 
 }
