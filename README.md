@@ -1,14 +1,14 @@
 # Backend
 
-API REST desarrollada con ASP.NET Core para practicar controladores, inyección de dependencias, consumo de servicios HTTP externos, validación con FluentValidation y persistencia con Entity Framework Core sobre SQL Server.
+API REST desarrollada con ASP.NET Core para practicar controladores, inyección de dependencias, servicios con distintos ciclos de vida, consumo de APIs externas, validación con FluentValidation, mapeo con AutoMapper y persistencia con Entity Framework Core sobre SQL Server.
 
 ## Tecnologías
 
 - .NET 10
 - ASP.NET Core Web API
-- Entity Framework Core
-- SQL Server
+- Entity Framework Core SQL Server
 - FluentValidation
+- AutoMapper
 - Swagger / OpenAPI
 - HttpClient
 
@@ -16,13 +16,15 @@ API REST desarrollada con ASP.NET Core para practicar controladores, inyección 
 
 ```text
 Backend/
+├── AutoMappers/       # Perfiles de AutoMapper
 ├── Controllers/       # Endpoints HTTP de la API
 ├── Dtos/              # Objetos de transferencia de datos
 ├── Migrations/        # Migraciones de Entity Framework Core
 ├── Models/            # Entidades y DbContext
-├── Services/          # Servicios e interfaces
+├── Repository/        # Abstracciones y repositorios de datos
+├── Services/          # Servicios e interfaces de negocio
 ├── Validators/        # Validaciones con FluentValidation
-├── Program.cs         # Configuración principal de la app
+├── Program.cs         # Configuración principal de la aplicación
 ├── Backend.csproj     # Dependencias y versión de .NET
 └── appsettings.json   # Configuración de conexión y servicios externos
 ```
@@ -45,7 +47,7 @@ dotnet tool update --global dotnet-ef
 
 ## Configuración
 
-La cadena de conexión se encuentra en `appsettings.json`:
+La cadena de conexión se define en `appsettings.json`:
 
 ```json
 "ConnectionStrings": {
@@ -53,13 +55,13 @@ La cadena de conexión se encuentra en `appsettings.json`:
 }
 ```
 
-También se configura la URL base usada por el servicio de posts:
+También se configura la URL base usada por `PostsService`:
 
 ```json
 "baseUrlPost": "https://jsonplaceholder.typicode.com/posts"
 ```
 
-Para ejecutar SQL Server localmente con Docker puedes usar:
+Para levantar SQL Server localmente con Docker:
 
 ```bash
 docker run -e "ACCEPT_EULA=Y" \
@@ -69,21 +71,23 @@ docker run -e "ACCEPT_EULA=Y" \
   -d mcr.microsoft.com/mssql/server:2022-latest
 ```
 
-## Instalación
+> Las credenciales incluidas son para desarrollo local. En producción conviene usar variables de entorno, user secrets o un gestor de secretos.
 
-Restaura las dependencias:
+## Instalación y ejecución
+
+Restaura dependencias:
 
 ```bash
 dotnet restore
 ```
 
-Aplica las migraciones a la base de datos:
+Aplica las migraciones:
 
 ```bash
 dotnet ef database update
 ```
 
-Ejecuta el proyecto:
+Ejecuta la API:
 
 ```bash
 dotnet run
@@ -104,7 +108,7 @@ https://localhost:7167/swagger
 
 ### Beer
 
-CRUD de cervezas persistido en SQL Server.
+CRUD de cervezas persistido en SQL Server. El controlador usa `ICommomService<BeerDto, BeerInsertDto, BeerUpdateDto>`, `BeerService`, `IRepository<Beer>` y `BeerRepository`.
 
 | Método | Ruta | Descripción |
 | --- | --- | --- |
@@ -124,7 +128,24 @@ Ejemplo para crear una cerveza:
 }
 ```
 
-> `name` es obligatorio y se valida con FluentValidation.
+Ejemplo para actualizar una cerveza:
+
+```json
+{
+  "id": 1,
+  "name": "Presidente Light",
+  "brandID": 1,
+  "alcohol": 4.3
+}
+```
+
+Validaciones principales:
+
+- `name` es obligatorio.
+- `name` debe tener entre 2 y 20 caracteres.
+- `brandID` debe ser mayor que 0.
+- `alcohol` debe ser mayor que 0.
+- No puede existir otra cerveza con el mismo nombre.
 
 ### People
 
@@ -147,6 +168,8 @@ Ejemplo para agregar una persona:
 }
 ```
 
+> `PeopleController` usa datos en memoria, por lo que los cambios se pierden al reiniciar la aplicación.
+
 ### Posts
 
 Consume datos externos desde JSONPlaceholder usando `HttpClient`.
@@ -157,7 +180,7 @@ Consume datos externos desde JSONPlaceholder usando `HttpClient`.
 
 ### Random
 
-Endpoint de demostración para comparar ciclos de vida de servicios inyectados.
+Endpoint de demostración para comparar ciclos de vida de servicios inyectados con servicios keyed.
 
 | Método | Ruta | Descripción |
 | --- | --- | --- |
@@ -165,7 +188,7 @@ Endpoint de demostración para comparar ciclos de vida de servicios inyectados.
 
 ### Operation
 
-Endpoints de ejemplo para operaciones aritmeticas.
+Endpoints de ejemplo para operaciones aritméticas.
 
 | Método | Ruta | Descripción |
 | --- | --- | --- |
@@ -201,12 +224,23 @@ El contexto `StoreContext` expone:
 
 Relaciones principales:
 
-- Una cerveza (`Beer`) pertenece a una marca (`Brand`)
-- `Beer.BrandID` es llave foránea hacia `Brand.BrandID`
+- Una cerveza (`Beer`) pertenece a una marca (`Brand`).
+- `Beer.BrandID` es llave foránea hacia `Brand.BrandID`.
+- `Beer.Alcohol` se almacena como `decimal(18,2)`.
 
-## Migraciones incluidas
+## Mapeo de datos
 
-El proyecto ya incluye migraciones de Entity Framework Core:
+`AutoMappers/MappingProfile.cs` define los mapeos:
+
+- `BeerInsertDto` -> `Beer`
+- `BeerUpdateDto` -> `Beer`
+- `Beer` -> `BeerDto`
+
+En el mapeo de salida, `Beer.BeerId` se expone como `BeerDto.Id`.
+
+## Migraciones
+
+El proyecto incluye estas migraciones de Entity Framework Core:
 
 - `InitDb`
 - `AlcoholInBeer`
@@ -223,14 +257,8 @@ Para aplicar migraciones pendientes:
 dotnet ef database update
 ```
 
-## Validaciones
-
-Actualmente existe validación para `BeerInsertDto`:
-
-- `Name` no puede estar vacío.
-
 ## Notas
 
-- Las credenciales de SQL Server están en `appsettings.json` para desarrollo local. En un entorno real conviene moverlas a variables de entorno, user secrets o un gestor de secretos.
-- `PeopleController` usa datos en memoria, por lo que los cambios no se persisten al reiniciar la aplicación.
-- `PostsController` depende de acceso a internet para consultar JSONPlaceholder.
+- `PostsController` requiere acceso a internet para consultar JSONPlaceholder.
+- Swagger solo se habilita cuando `ASPNETCORE_ENVIRONMENT` es `Development`.
+- `Backend.http` contiene una solicitud de ejemplo, pero puede requerir actualización si se agregan nuevos endpoints.

@@ -17,7 +17,7 @@ namespace Backend.Controllers
         private ICommomService<BeerDto, BeerInsertDto, BeerUpdateDto> _beerService;
 
         public BeerController(
-            IValidator<BeerInsertDto> beerInsertValidator, 
+            IValidator<BeerInsertDto> beerInsertValidator,
             IValidator<BeerUpdateDto> beerUpdateValidator,
             [FromKeyedServices("beerService")] ICommomService<BeerDto, BeerInsertDto, BeerUpdateDto> beerService
             )
@@ -46,11 +46,16 @@ namespace Backend.Controllers
         {
             // Validar
             var validationResult = await _beerInsertValidator.ValidateAsync(beerInsertDto);
-            if(!validationResult.IsValid)
+            if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.Errors);
             }
-            
+
+            // Validation For Services
+            if (!_beerService.Validate(beerInsertDto))
+            {
+                return BadRequest(_beerService.Errors);
+            }
             var beer = await _beerService.Add(beerInsertDto);
 
             return CreatedAtAction(nameof(GetById), new { id = beer.Id }, beer); // Crea el elemento, retorna el objeto y dice donde esta disponible
@@ -60,10 +65,15 @@ namespace Backend.Controllers
         public async Task<ActionResult<BeerDto>> Update(int id, BeerUpdateDto beerUpdateDto)
         {
             // Validar
-            var validResult =await _beerUpdateValidator.ValidateAsync(beerUpdateDto);
-            if(!validResult.IsValid)
+            var validResult = await _beerUpdateValidator.ValidateAsync(beerUpdateDto);
+            if (!validResult.IsValid)
             {
-                return BadRequest(validResult.Errors); 
+                return BadRequest(validResult.Errors);
+            }
+            // Validation For Services
+            if (!_beerService.Validate(beerUpdateDto))
+            {
+                return BadRequest(_beerService.Errors);
             }
 
             var beerUpdated = await _beerService.Update(id, beerUpdateDto);

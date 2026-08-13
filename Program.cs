@@ -1,3 +1,5 @@
+using AutoMapper;
+using Backend.AutoMappers;
 using Backend.Dtos;
 using Backend.Models;
 using Backend.Repository;
@@ -25,7 +27,6 @@ builder.Services.AddHttpClient<IPostsService, PostsService>( client =>
     client.BaseAddress = new Uri(builder.Configuration["baseUrlPost"]);
 });
 
-
 // Repository
 builder.Services.AddScoped<IRepository<Beer>, BeerRepository>();
 
@@ -39,6 +40,8 @@ builder.Services.AddDbContext<StoreContext>(options =>
 builder.Services.AddScoped<IValidator<BeerInsertDto>, BeerInsertValidator>();
 builder.Services.AddScoped<IValidator<BeerUpdateDto>, BeerUpdateValidator>();
 
+// AutoMappers
+builder.Services.AddAutoMapper(typeof(MappingProfile) );
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
